@@ -68,6 +68,7 @@
         background: rgba(255,255,255,0.18);
         border-radius: 10px;
         display: none;
+        text-align: left;
     }
 
     /* Loading panel */
@@ -154,15 +155,12 @@
     const UNIQUE_CODE = "67aaGhywoBotffsouth";
 
     function showTracking() {
-        // Hide welcome page
         document.getElementById("welcomePage").style.display = "none";
-
-        // Show tracking page with fade animation
         let trackingPage = document.getElementById("trackingPage");
         trackingPage.style.display = "block";
         setTimeout(() => {
             trackingPage.classList.add("show");
-        }, 50); // small delay to trigger transition
+        }, 50);
     }
 
     function trackNow() {
@@ -181,10 +179,16 @@
 
             if (userInput === UNIQUE_CODE) {
                 details.innerHTML = `
-                    <b>Status:</b> In Transit<br><br>
+                    <b>Status:</b> In Transit<br>
+                    <b>Custom Duty:</b> Not yet cleared<br><br>
                     <b>Origin:</b> Yemen<br>
                     <b>Current Location:</b> South Africa<br>
                     <b>Destination:</b> Botswana<br><br>
+                    <b>Item Quantity:</b> 1<br>
+                    <b>Weight:</b> 6.7 kg<br><br>
+                    <b>Sender:</b> Bien Millicent<br>
+                    <b>Receiver:</b> Mr Gordon N. Matengu<br>
+                    <b>Address:</b> P.O. Box 365, Kasane, Botswana<br><br>
                     <b>Last Update:</b> To be cleared for dispatch
                 `;
                 resultBox.style.display = "block";
