@@ -13,6 +13,7 @@
         font-family: Arial, sans-serif;
         color: white;
         text-align: center;
+        overflow-x: hidden;
     }
 
     .logo {
@@ -27,9 +28,12 @@
     .box {
         background: rgba(0,0,0,0.25);
         width: 90%;
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 10px;
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        transition: transform 0.6s, opacity 0.6s;
     }
 
     input {
@@ -50,6 +54,12 @@
         border-radius: 8px;
         font-size: 16px;
         font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #333;
     }
 
     .result {
@@ -59,6 +69,53 @@
         border-radius: 10px;
         display: none;
     }
+
+    /* Loading panel */
+    .loader-box {
+        display: none;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    .spinner {
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin: 10px auto;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Animations for welcome page */
+    #welcomePage {
+        transform: translateY(-100px);
+        opacity: 0;
+        animation: slideIn 1s forwards;
+    }
+
+    @keyframes slideIn {
+        0% { transform: translateY(-100px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Fade in for tracking page */
+    #trackingPage {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity 0.6s, transform 0.6s;
+    }
+
+    #trackingPage.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+
 </style>
 </head>
 
@@ -66,13 +123,27 @@
 
 <div class="logo">ARAMEX</div>
 
-<div class="box">
+<!-- WELCOME PAGE -->
+<div class="box" id="welcomePage">
+    <h2>Welcome to ARAMEX Tracking</h2>
+    <p>Click below to start tracking your shipment</p>
+    <button onclick="showTracking()">Start Tracking</button>
+</div>
+
+<!-- TRACKING PAGE -->
+<div class="box" id="trackingPage" style="display:none;">
     <h2>Track Your Shipment</h2>
 
     <input type="text" id="trackInput" placeholder="Enter Tracking Number">
-
     <button onclick="trackNow()">TRACK</button>
 
+    <!-- LOADING PANEL -->
+    <div class="loader-box" id="loaderBox">
+        <div class="spinner"></div>
+        Processing your tracking number...
+    </div>
+
+    <!-- RESULT PANEL -->
     <div class="result" id="resultBox">
         <h3>Tracking Result</h3>
         <p id="details"></p>
@@ -80,26 +151,48 @@
 </div>
 
 <script>
-    const UNIQUE_CODE = "67aaGhywoBotffsouth";  // FIXED UNIQUE NUMBER
+    const UNIQUE_CODE = "67aaGhywoBotffsouth";
+
+    function showTracking() {
+        // Hide welcome page
+        document.getElementById("welcomePage").style.display = "none";
+
+        // Show tracking page with fade animation
+        let trackingPage = document.getElementById("trackingPage");
+        trackingPage.style.display = "block";
+        setTimeout(() => {
+            trackingPage.classList.add("show");
+        }, 50); // small delay to trigger transition
+    }
 
     function trackNow() {
         let userInput = document.getElementById("trackInput").value.trim();
+        let loader = document.getElementById("loaderBox");
         let resultBox = document.getElementById("resultBox");
         let details = document.getElementById("details");
 
-        if (userInput === UNIQUE_CODE) {
-            details.innerHTML = `
-                <b>Status:</b> In Transit<br><br>
-                <b>Origin:</b> Yemen<br>
-                <b>Current Location:</b> Cargo south Africa<br><br>
-                <b>Destination:</b> Botswana<br><br>
-                <b>Last Update:</b> to be cleared for dispatch
-            `;
-            resultBox.style.display = "block";
-        } else {
-            details.innerHTML = "❌ Invalid Tracking Number";
-            resultBox.style.display = "block";
-        }
+        // Reset panels
+        resultBox.style.display = "none";
+        loader.style.display = "block";
+
+        // Simulate loading (2 seconds)
+        setTimeout(() => {
+            loader.style.display = "none";
+
+            if (userInput === UNIQUE_CODE) {
+                details.innerHTML = `
+                    <b>Status:</b> In Transit<br><br>
+                    <b>Origin:</b> Yemen<br>
+                    <b>Current Location:</b> South Africa<br>
+                    <b>Destination:</b> Botswana<br><br>
+                    <b>Last Update:</b> To be cleared for dispatch
+                `;
+                resultBox.style.display = "block";
+            } else {
+                details.innerHTML = "❌ Invalid Tracking Number";
+                resultBox.style.display = "block";
+            }
+        }, 2000);
     }
 </script>
 
